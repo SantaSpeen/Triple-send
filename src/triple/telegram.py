@@ -4,10 +4,12 @@ from aiogram import Bot, Dispatcher, types
 class Telegram:
 
     def __init__(self, token: str, handler):
+        """  """
         self.bot = Bot(token=token)
         self.handler = handler
 
     async def start_handler(self, event: types.Message):
+        """  """
         answer = await self.handler({'tg_event': event})
         if answer:
             await event.answer(
@@ -17,6 +19,7 @@ class Telegram:
             )
 
     async def run(self):
+        """  """
         while True:
             try:
                 disp = Dispatcher(bot=self.bot)
