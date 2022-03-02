@@ -1,1 +1,1 @@
-from .Triple import Triple
+from .Triple import Triple, OnlyFrom

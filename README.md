@@ -16,7 +16,7 @@ flowchart TD
 flowchart TD
 
     T[Triple] -- Not ready --> VK[VK];
-    T[Triple] -- Not ready --> TG[Telegram];
+    T[Triple] -- Ready --> TG[Telegram];
     T[Triple] -- Not ready --> DS[Discord];
 
 ```

@@ -1,10 +1,12 @@
-import logging
-from triple import Triple
+from triple import Triple, OnlyFrom
 
-logging.basicConfig(level=logging.NOTSET,
-                    format="%(asctime)s - %(name)-5s - %(levelname)-7s - %(message)s")
 
 tr = Triple()
+
+
+@tr.on_message("start", only_from=OnlyFrom.all)
+def start(event):
+    return f"event:\n```json\n{event}\n```"
 
 
 if __name__ == '__main__':
