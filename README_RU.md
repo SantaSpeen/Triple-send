@@ -15,23 +15,18 @@ flowchart TD
 
 </p>
 
-[//]: # (    <img src="./assets/preview.png" alt="preview">)
 
-##### Версия для русских: [здесь](./README_RU.md)
-
-## Command-line interface for programs on Python3
-
-### How to run
+### Как запускать
 
 ```python
 
 ```
 
-## Links
+## Ссылки
 
-* [Author's Telegram](https://t.me/SantaSpeen "SantaSpeen"): https://t.me/SantaSpeen
+* [Мой Telegram](https://t.me/SantaSpeen "SantaSpeen"): https://t.me/SantaSpeen
 
-Used in: 
+Используемые в проектах: 
 
 * [Python-CLI-Game-Engine](https://github.com/SantaSpeen/Python-CLI-Game-Engine)
 * [CLI-Remote-in-Python](https://github.com/SantaSpeen/CLI-Remote-in-Python)
