@@ -12,6 +12,14 @@ flowchart TD
     A[preview?] --> B[No preview];
     
 ```
+```mermaid
+flowchart TD
+
+    T[Triple] -- Not ready --> VK[VK];
+    T[Triple] -- Not ready --> TG[Telegram];
+    T[Triple] -- Not ready --> DS[Discord];
+
+```
 </p>
 
 [//]: # (    <img src="./assets/preview.png" alt="preview">)
