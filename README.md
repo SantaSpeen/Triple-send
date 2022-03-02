@@ -19,7 +19,6 @@ flowchart TD
 
 ##### Версия для русских: [здесь](./README_RU.md)
 
-## Command-line interface for programs on Python3
 
 ### How to run
 
