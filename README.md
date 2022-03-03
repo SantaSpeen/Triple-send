@@ -6,10 +6,11 @@
     <a href="https://github.com/SantaSpeen"><img src="./assets/magic_logo.svg" alt="magic"></a>
     <br/>
     <a href="./src/main.py">
-        <img src="./assets/preview_vk.png" alt="preview vk">
-        <img src="./assets/preview_tg.png" alt="preview tg">
-        <br/>
         <img src="./assets/preview_ds.png" alt="preview ds">
+        <br/>
+        <img src="./assets/preview_vk.png" alt="preview vk">
+        <br/>
+        <img src="./assets/preview_tg.png" alt="preview tg">
     </a>
     <br/>
 </p>
