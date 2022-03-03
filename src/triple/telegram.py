@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher, types
 
 class Telegram:
 
-    def __init__(self, token: str, handler):
+    def __init__(self, token: str, handler, loop):
         """  """
         self.log: logging.Logger = logging.getLogger("Telegram")
         self.__debug: logging.Logger.debug = self.log.debug
@@ -13,13 +13,14 @@ class Telegram:
         self.__debug(f"__init__(self, {token=}, {handler=})")
 
         self.bot = Bot(token=token)
+        self.dispatcher = Dispatcher(self.bot, loop)
 
         self.__debug(f"Bot: {self.bot}")
         self.handler = handler
 
     async def start_handler(self, event: types.Message):
         """  """
-        answer = await self.handler({'tg_event': event})
+        answer = await self.handler('tg_event', event, self)
         if answer[0]:
             await event.answer(
                 answer[0],
@@ -29,12 +30,12 @@ class Telegram:
 
     async def run(self):
         """  """
-        self.__debug("Run")
-        print("Telegram bot started!")
         while True:
             try:
-                disp = Dispatcher(bot=self.bot)
-                disp.register_message_handler(self.start_handler)
-                await disp.start_polling()
+                self.dispatcher.register_message_handler(self.start_handler)
+                self.dispatcher.register_edited_message_handler(self.start_handler)
+                print("Telegram bot started!")
+                self.__debug("Run")
+                await self.dispatcher.start_polling()
             finally:
                 await self.bot.close()

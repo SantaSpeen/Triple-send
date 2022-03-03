@@ -100,28 +100,33 @@ class Triple:
                 if cmd == text:
                     return v
 
-    async def __message_handler(self, event):
+    async def __message_handler(self, event_type, event, cls):
         text = None
         query = None
-        add = []
-        if event.get("tg_event"):
-            event: aiogram.types.Message = event['tg_event']
+        add = None
+
+        if event_type == "tg_event":
+            event: aiogram.types.Message = event
             text = event.text
             query = "tg_query"
-        elif event.get("vk_event"):
-            event: dict = event['vk_event']
+        elif event_type == "vk_event":
+            event: dict = event
             text = event['text']
             query = "vk_query"
-            add = [event['peer_id']]
+            add = event['peer_id']
 
-        elif event.get("ds_event"):
-            event: discord.Message = event['ds_event']
+        elif event_type == "ds_event":
+            event: discord.Message = event
             text = event.content
             query = "ds_query"
 
         func = self.__found_in_query(query, text)
+
+        self.log.info(f"New event ({event_type}): {event}")
+
         if func:
             return func['function'](event), add
+        return None, None
 
     def on_message(self,
                    commands: list or str,
@@ -215,7 +220,7 @@ class Triple:
             pass
 
         vk = Vk(self.tokens['vk'], self.__message_handler)
-        tg = Telegram(self.tokens['tg'], self.__message_handler)
+        tg = Telegram(self.tokens['tg'], self.__message_handler, loop)
         ds = Discord(self.tokens['ds'], self.__message_handler, loop)
 
         tasks = [

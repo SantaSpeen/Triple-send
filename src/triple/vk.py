@@ -33,9 +33,11 @@ class Vk:
                 r = await longpoll.wait()
                 if r.get('updates'):
                     if r['updates'][0]['type'] == 'message_new':
-                        answer = await self.handler({"vk_event": r['updates'][0]['object'].get('message')})
+                        event = r['updates'][0]['object'].get('message')
+                        answer = await self.handler("vk_event", event, self)
                         if answer[0]:
-                            await self.api.messages.send(message=answer[0], peer_id=answer[1][0], random_id=0)
+                            await self.api.messages.send(message=answer[0], peer_id=answer[1], random_id=0)
+
             except Exception as e:
                 print(e)
 

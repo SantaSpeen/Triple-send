@@ -23,9 +23,7 @@ class Discord(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        print(message.ra)
-
-        answer = await self.handler({'ds_event': message})
+        answer = await self.handler('ds_event', message, self)
         if answer[0]:
             await message.reply(
                 answer[0]
