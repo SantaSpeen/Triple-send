@@ -1,6 +1,6 @@
 import triple
 
-# TODO: Changeable vk_api_version
+# TODO: Changeable vk_api_version, list with allowed_events
 # default vk_api_version is 5.131
 tr = triple.Triple(
     vk_token="Token here",  # Default None
