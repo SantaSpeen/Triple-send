@@ -25,7 +25,7 @@ class Telegram:
         if answer:
             await event.answer(
                 answer,
-                parse_mode=types.ParseMode.MARKDOWN_V2,
+                parse_mode=types.ParseMode.MARKDOWN,
                 disable_web_page_preview=True,
             )
 

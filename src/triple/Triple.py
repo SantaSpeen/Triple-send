@@ -60,7 +60,8 @@ class Triple:
         self.__queries = {
             "vk_query": [],
             "tg_query": [],
-            "ds_query": []
+            "ds_query": [],
+            "raw_query": []
         }
 
         self.__read_config()
@@ -100,7 +101,7 @@ class Triple:
             cmd: str or re = v['command']
             regex = v['regex']
             if regex:
-                if regex.match():
+                if regex.match(text):
                     return v
             else:
                 if v['is_startswith']:
@@ -112,6 +113,9 @@ class Triple:
     async def __message_handler(self, event_type, event, cls):
 
         add = 0x0
+
+        for f in self.__queries['raw_query']:
+            asyncio.create_task(f(event_type, event))
 
         if event_type == "tg_event":
             event: types.Telegram = types.Telegram(cls.bot, cls.dispatcher, event)
@@ -133,7 +137,12 @@ class Triple:
         self.log.info(f"New event ({event_type}): {event}")
 
         if func:
-            return func['function'](event_type, event), add
+            coro_or_not = func['function'](event_type, event)
+            try:
+                return await coro_or_not, add
+
+            except TypeError:
+                return coro_or_not, add
 
         return None, add
 
@@ -191,6 +200,18 @@ class Triple:
                         "is_startswith": startswith,
                         "regex": regex_compiled
                     })
+
+            return f
+
+        return wrapper
+
+    @property
+    def on_event(self):
+        """ All event listener """
+
+        def wrapper(f):
+
+            self.__queries['raw_query'].append(f)
 
             return f
 
