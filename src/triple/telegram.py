@@ -13,7 +13,7 @@ class Telegram:
         answer = await self.handler({'tg_event': event})
         if answer[0]:
             await event.answer(
-                answer,
+                answer[0],
                 parse_mode=types.ParseMode.MARKDOWN_V2,
                 disable_web_page_preview=True,
             )
