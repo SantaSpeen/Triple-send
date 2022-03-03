@@ -5,29 +5,20 @@
     <a href="https://github.com/SantaSpeen/Triple-send/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/SantaSpeen/Triple-send?style=for-the-badge"></a>    
     <a href="https://github.com/SantaSpeen"><img src="./assets/magic_logo.svg" alt="magic"></a>
     <br/>
-
-```mermaid
-flowchart TD
-
-    A[preview?] --> B[No preview];
-    
-```
-```mermaid
-flowchart TD
-
-    T[Triple] -- Ready --> VK[VK];
-    T[Triple] -- Ready --> TG[Telegram];
-    T[Triple] -- Ready --> DS[Discord];
-
-```
-
+    <a href="./src/main.py">
+        <img src="./assets/preview_vk.png" alt="preview vk">
+        <img src="./assets/preview_tg.png" alt="preview tg">
+        <br/>
+        <img src="./assets/preview_ds.png" alt="preview ds">
+    </a>
+    <br/>
 </p>
 
 
 ### Как запускать
 
 ```python
-
+None
 ```
 
 ## Ссылки
