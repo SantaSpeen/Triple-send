@@ -11,6 +11,7 @@ from typing import List
 import aiogram
 import discord
 
+from . import types
 from .exceptions import NoEnoughTokens
 from .telegram import Telegram
 from .vk import Vk
@@ -101,31 +102,30 @@ class Triple:
                     return v
 
     async def __message_handler(self, event_type, event, cls):
-        text = None
-        query = None
-        add = None
+
+        add = 0x0
 
         if event_type == "tg_event":
-            event: aiogram.types.Message = event
-            text = event.text
+            event: types.Telegram = types.Telegram(cls.bot, cls.dispatcher, event)
             query = "tg_query"
         elif event_type == "vk_event":
-            event: dict = event
-            text = event['text']
+            event: types.Vkontakte = types.Vkontakte(cls.vk_session, cls.api, event)
             query = "vk_query"
-            add = event['peer_id']
+            add = event.chat_id
 
         elif event_type == "ds_event":
-            event: discord.Message = event
-            text = event.content
+            event: types.Discord = types.Discord(cls, None, event)
             query = "ds_query"
 
-        func = self.__found_in_query(query, text)
+        else:
+            return None, None
+
+        func = self.__found_in_query(query, event.text)
 
         self.log.info(f"New event ({event_type}): {event}")
 
         if func:
-            return func['function'](event), add
+            return func['function'](event_type, event), add
         return None, None
 
     def on_message(self,

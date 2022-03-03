@@ -1,6 +1,7 @@
 import logging
 
 from aiogram import Bot, Dispatcher, types
+from aiogram.utils.markdown import escape_md
 
 
 class Telegram:

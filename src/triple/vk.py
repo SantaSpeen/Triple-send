@@ -13,11 +13,11 @@ class Vk:
 
         self.__debug(f"__init__(self, {token=}, {handler=})")
 
-        vk_session = aiovk.TokenSession(access_token=token)
-        vk_session.API_VERSION = "5.131"
-        self.api = aiovk.API(vk_session)
+        self.vk_session = aiovk.TokenSession(access_token=token)
+        self.vk_session.API_VERSION = "5.131"
+        self.api = aiovk.API(self.vk_session)
 
-        self.__debug(f"{vk_session=}, {self.api=}")
+        self.__debug(f"{self.vk_session=}, {self.api=}")
 
         self.handler = handler
         
