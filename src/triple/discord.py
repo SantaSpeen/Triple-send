@@ -11,9 +11,8 @@ class Discord(discord.Client):
         self.__debug: logging.Logger.debug = self.log.debug
 
         self.__debug(f"__init__(self, {token=}, {handler=})")
-
         self.loop = loop
-
+        self.token = token
         self.handler = handler
 
     async def on_ready(self):
@@ -23,13 +22,16 @@ class Discord(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        answer = await self.handler('ds_event', message, self)
-        if answer[0]:
+        answer, _ = await self.handler('ds_event', message, self)
+        if answer:
             await message.reply(
-                answer[0]
+                answer
             )
 
     async def run(self, *args, **kwargs):
+        args = list(args)
+        args.append(self.token)
+
         try:
             await self.start(*args, **kwargs)
         finally:

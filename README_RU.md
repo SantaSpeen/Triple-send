@@ -15,9 +15,9 @@ flowchart TD
 ```mermaid
 flowchart TD
 
-    T[Triple] -- Not ready --> VK[VK];
+    T[Triple] -- Ready --> VK[VK];
     T[Triple] -- Ready --> TG[Telegram];
-    T[Triple] -- Not ready --> DS[Discord];
+    T[Triple] -- Ready --> DS[Discord];
 
 ```
 

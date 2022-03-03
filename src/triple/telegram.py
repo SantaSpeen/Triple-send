@@ -1,7 +1,6 @@
 import logging
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.utils.markdown import escape_md
 
 
 class Telegram:
@@ -21,10 +20,10 @@ class Telegram:
 
     async def start_handler(self, event: types.Message):
         """  """
-        answer = await self.handler('tg_event', event, self)
-        if answer[0]:
+        answer, _ = await self.handler('tg_event', event, self)
+        if answer:
             await event.answer(
-                answer[0],
+                answer,
                 parse_mode=types.ParseMode.MARKDOWN_V2,
                 disable_web_page_preview=True,
             )

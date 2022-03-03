@@ -8,9 +8,6 @@ from builtins import NotImplementedError
 from enum import Enum
 from typing import List
 
-import aiogram
-import discord
-
 from . import types
 from .exceptions import NoEnoughTokens
 from .telegram import Telegram
@@ -118,7 +115,7 @@ class Triple:
             query = "ds_query"
 
         else:
-            return None, None
+            return
 
         func = self.__found_in_query(query, event.text)
 
@@ -126,7 +123,7 @@ class Triple:
 
         if func:
             return func['function'](event_type, event), add
-        return None, None
+        return
 
     def on_message(self,
                    commands: list or str,
@@ -187,22 +184,6 @@ class Triple:
 
         return wrapper
 
-    # async def __run(self, loop):
-    #     vk = Vk(self.tokens['vk'], self.__message_handler)
-    #     tg = Telegram(self.tokens['tg'], self.__message_handler)
-    #     ds = Discord(self.tokens['ds'], self.__message_handler, loop).run(self.tokens['ds'])
-    #
-    #     tasks = [
-    #         vk.run(),
-    #         tg.run(),
-    #     ]
-    #
-    #     for task in tasks:
-    #         asyncio.create_task(task)
-    #     # wait_tasks = asyncio.wait(tasks)
-    #
-    #     await ds
-
     def run(self, loop: asyncio.get_event_loop = asyncio_loop) -> None:
         """
         Запуск программы:
@@ -219,22 +200,21 @@ class Triple:
         except NotImplementedError:
             pass
 
-        vk = Vk(self.tokens['vk'], self.__message_handler)
-        tg = Telegram(self.tokens['tg'], self.__message_handler, loop)
-        ds = Discord(self.tokens['ds'], self.__message_handler, loop)
+        tasks = list()
 
-        tasks = [
-            vk.run(),
-            tg.run(),
-            ds.run(self.tokens['ds'])
-        ]
+        if self.tokens['vk']:
+            vk = Vk(self.tokens['vk'], self.__message_handler)
+            tasks.append(vk.run())
+        if self.tokens['tg']:
+            tg = Telegram(self.tokens['tg'], self.__message_handler, loop)
+            tasks.append(tg.run())
+        if self.tokens['ds']:
+            ds = Discord(self.tokens['ds'], self.__message_handler, loop)
+            tasks.append(ds.run())
 
-        # for task in tasks:
-        #     asyncio.create_task(task)
         wait_tasks = asyncio.wait(tasks)
 
         try:
-            # loop.run_until_complete(sellf.__run(loop))  # Запуск
             loop.run_until_complete(wait_tasks)  # Запуск
         except KeyboardInterrupt:
             print('Exit')
