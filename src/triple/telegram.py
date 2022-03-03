@@ -11,7 +11,7 @@ class Telegram:
     async def start_handler(self, event: types.Message):
         """  """
         answer = await self.handler({'tg_event': event})
-        if answer:
+        if answer[0]:
             await event.answer(
                 answer,
                 parse_mode=types.ParseMode.MARKDOWN_V2,
@@ -20,6 +20,7 @@ class Telegram:
 
     async def run(self):
         """  """
+        print("Telegram bot started!")
         while True:
             try:
                 disp = Dispatcher(bot=self.bot)

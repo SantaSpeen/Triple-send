@@ -10,6 +10,8 @@ import aiogram
 
 from .exceptions import NoEnoughTokens
 from .telegram import Telegram
+from .vk import Vk
+from .discord import Discord
 
 asyncio_loop = asyncio.get_event_loop()
 
@@ -80,6 +82,8 @@ class Triple:
         })
 
     def __found_in_query(self, query, text):
+        if not query:
+            pass
         for v in self.__queries[query]:
             cmd: str or re = v['command']
             regex = v['regex']
@@ -94,14 +98,24 @@ class Triple:
                     return v
 
     async def __message_handler(self, event):
-        func = None
+        text = None
+        query = None
+        add = []
         if event.get("tg_event"):
             event: aiogram.types.Message = event['tg_event']
             text = event.text
-            func = self.__found_in_query("tg_query", text)
+            query = "tg_query"
+        elif event.get("vk_event"):
+            event: dict = event['vk_event']
+            text = event['text']
+            query = "vk_query"
+            add = [event['peer_id']]
+        else:
+            print(event)
 
+        func = self.__found_in_query(query, text)
         if func:
-            return func['function'](event)
+            return func['function'](event), add
 
     def on_message(self,
                    commands: list or str,
@@ -162,15 +176,6 @@ class Triple:
 
         return wrapper
 
-    async def async_loop(self):
-        tg = Telegram(self.tokens['tg'], self.__message_handler)
-
-        tasks = [
-            tg.run()
-        ]
-        for task in tasks:
-            await asyncio.create_task(task)
-
     def run(self, loop: asyncio.get_event_loop = asyncio_loop) -> None:
         """
         Запуск программы:
@@ -179,8 +184,17 @@ class Triple:
             :param loop: > self asyncio.get_event_loop() or u may input yours
         """
 
+        tg = Telegram(self.tokens['tg'], self.__message_handler)
+        vk = Vk(self.tokens['vk'], self.__message_handler)
+
+        tasks = [
+            tg.run(),
+            vk.run()
+        ]
+        wait_tasks = asyncio.wait(tasks)
+
         try:
-            loop.run_until_complete(self.async_loop())  # Запуск
+            loop.run_until_complete(wait_tasks)  # Запуск
         except KeyboardInterrupt:
             self.__debug('Exit')
             loop.stop()

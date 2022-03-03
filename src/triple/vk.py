@@ -3,20 +3,32 @@ import aiovk
 
 class Vk:
 
-    def __init__(self, token):
+    def __init__(self, token, handler):
         self.group_id = None
         vk_session = aiovk.TokenSession(access_token=token)
         vk_session.API_VERSION = "5.131"
         self.api = aiovk.API(vk_session)
+        self.handler = handler
         
     async def find_self_id(self):
-        print(await self.api.groups.getById())
-        self.group_id = 1
+        response = await self.api.groups.getById()
+        self.group_id = response[0]['id']
 
     async def longpoll(self):
-        pass
-        # longpoll = aiovk.longpoll.BotsLongPoll(self.api, group_id=self.group_id, wait=5)
+        longpoll = aiovk.longpoll.BotsLongPoll(self.api,
+                                               group_id=self.group_id)
+        while True:
+            try:
+                r = await longpoll.wait()
+                if r.get('updates'):
+                    if r['updates'][0]['type'] == 'message_new':
+                        answer = await self.handler({"vk_event": r['updates'][0]['object'].get('message')})
+                        if answer[0]:
+                            msg_id = await self.api.messages.send(message=answer[0], peer_id=answer[1][0], random_id=0)
+            except Exception as e:
+                print(e)
 
     async def run(self):
         await self.find_self_id()
+        print(f"Vk bot started! Bot ID: {self.group_id}")
         await self.longpoll()
