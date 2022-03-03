@@ -13,7 +13,7 @@ class MessageObject:
     date: int
     user_id: int
     chat_id: int
-    message_id: Union[list, None]
+    message_id: list
     attachments: list
     text: str
 
@@ -45,15 +45,21 @@ class Telegram(MessageObject):
         raw = dict(raw)
         self.client: aiogram.Bot = client
         self.api: aiogram.Dispatcher = api
+        self.raw: dict = raw
 
         self.date: int = raw.get("date")
         self.user_id: int = raw['from'].get('id')
         self.chat_id: int = raw.get("date")
         self.message_id: int = raw.get("message_id")
-        self.attachments: Union[list, None] = None
-        self.text: str = raw.get("text")
+        self.attachments: list = self.__found_attachments()
+        self.text: str = raw.get("text") or raw.get("caption") or ""
 
-        self.raw: dict = raw
+    # noinspection PyUnresolvedReferences
+    def __found_attachments(self):
+        for tg_content_type in aiogram.tg_content_types:
+            if self.raw.get(tg_content_type):
+                return self.raw[tg_content_type]
+        return []
 
     def __repr__(self):
         return f"<Telegram date={self.date} user_id={self.user_id} chat_id={self.chat_id} message_id={self.message_id} attachments={self.attachments} text={self.text}>"

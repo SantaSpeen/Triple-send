@@ -1,3 +1,3 @@
-from .Triple import Triple, OnlyFrom
+from .Triple import Triple, OnlyFrom, tg_content_types
 from . import types
 

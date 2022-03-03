@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher, types
 
 class Telegram:
 
-    def __init__(self, token: str, handler, loop):
+    def __init__(self, token: str, handler, loop, content_types):
         """  """
         self.log: logging.Logger = logging.getLogger("Telegram")
         self.__debug: logging.Logger.debug = self.log.debug
@@ -17,6 +17,7 @@ class Telegram:
 
         self.__debug(f"Bot: {self.bot}")
         self.handler = handler
+        self.content_types = content_types
 
     async def start_handler(self, event: types.Message):
         """  """
@@ -30,10 +31,14 @@ class Telegram:
 
     async def run(self):
         """  """
+        kwargs = {
+            "callback": self.start_handler,
+            "content_types": self.content_types
+        }
         while True:
             try:
-                self.dispatcher.register_message_handler(self.start_handler)
-                self.dispatcher.register_edited_message_handler(self.start_handler)
+                self.dispatcher.register_message_handler(**kwargs)
+                self.dispatcher.register_edited_message_handler(**kwargs)
                 print("Telegram bot started!")
                 self.__debug("Run")
                 await self.dispatcher.start_polling()

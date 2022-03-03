@@ -15,6 +15,17 @@ from .vk import Vk
 from .discord import Discord
 
 asyncio_loop = asyncio.get_event_loop()
+tg_content_types = ['photo', 'document', 'audio', 'sticker', 'animation', 'voice', 'video_note']
+
+
+def __ne_bey():
+    # Add tg_content_types to aiogram
+    import aiogram
+    aiogram.tg_content_types = tg_content_types
+    del aiogram
+
+
+__ne_bey()
 
 
 class OnlyFrom(Enum):
@@ -115,7 +126,7 @@ class Triple:
             query = "ds_query"
 
         else:
-            return
+            return None, add
 
         func = self.__found_in_query(query, event.text)
 
@@ -123,7 +134,8 @@ class Triple:
 
         if func:
             return func['function'](event_type, event), add
-        return
+
+        return None, add
 
     def on_message(self,
                    commands: list or str,
@@ -206,7 +218,7 @@ class Triple:
             vk = Vk(self.tokens['vk'], self.__message_handler)
             tasks.append(vk.run())
         if self.tokens['tg']:
-            tg = Telegram(self.tokens['tg'], self.__message_handler, loop)
+            tg = Telegram(self.tokens['tg'], self.__message_handler, loop, tg_content_types)
             tasks.append(tg.run())
         if self.tokens['ds']:
             ds = Discord(self.tokens['ds'], self.__message_handler, loop)
