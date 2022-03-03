@@ -4,5 +4,8 @@
   "ds_token": null,
   "vk_api_settings": {
     "version": "5.131"
-  }
+  },
+  "allowed_events": [
+    "message_new"
+  ]
 }

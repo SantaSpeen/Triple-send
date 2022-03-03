@@ -30,12 +30,19 @@ class Vk:
             self.api,
             group_id=self.group_id
         )
+
+        allowed_events = ['message_new']
+
         while True:
             try:
                 r = await longpoll.wait()
                 if r.get('updates'):
-                    if r['updates'][0]['type'] == 'message_new':
-                        event = r['updates'][0]['object'].get('message')
+                    event_type: str = r['updates'][0]['type']
+                    if event_type in allowed_events:
+                        event_object = r['updates'][0]['object']
+                        event = event_object
+                        if event_type.startswith('message'):
+                            event = event_object['message']
                         answer, peer_id = await self.handler("vk_event", event, self)
                         if answer:
                             await self.api.messages.send(message=answer, peer_id=peer_id, random_id=0)
