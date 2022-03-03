@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Bot, Dispatcher, types
 
 
@@ -5,7 +7,14 @@ class Telegram:
 
     def __init__(self, token: str, handler):
         """  """
+        self.log: logging.Logger = logging.getLogger("Telegram")
+        self.__debug: logging.Logger.debug = self.log.debug
+
+        self.__debug(f"__init__(self, {token=}, {handler=})")
+
         self.bot = Bot(token=token)
+
+        self.__debug(f"Bot: {self.bot}")
         self.handler = handler
 
     async def start_handler(self, event: types.Message):
@@ -20,6 +29,7 @@ class Telegram:
 
     async def run(self):
         """  """
+        self.__debug("Run")
         print("Telegram bot started!")
         while True:
             try:

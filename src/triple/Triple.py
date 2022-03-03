@@ -183,13 +183,12 @@ class Triple:
 
             :param loop: > self asyncio.get_event_loop() or u may input yours
         """
-
-        tg = Telegram(self.tokens['tg'], self.__message_handler)
         vk = Vk(self.tokens['vk'], self.__message_handler)
+        tg = Telegram(self.tokens['tg'], self.__message_handler)
 
         tasks = [
+            vk.run(),
             tg.run(),
-            vk.run()
         ]
         wait_tasks = asyncio.wait(tasks)
 
