@@ -23,7 +23,6 @@ class Vk:
         
     async def find_self_id(self):
         response = await self.api.groups.getById()
-        print(response)
         self.group_id = response[0]['id']
 
     async def longpoll(self):

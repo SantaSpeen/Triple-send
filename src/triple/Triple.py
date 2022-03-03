@@ -3,10 +3,13 @@ import json
 import os
 import re
 import logging
+import signal
+from builtins import NotImplementedError
 from enum import Enum
 from typing import List
 
 import aiogram
+import discord
 
 from .exceptions import NoEnoughTokens
 from .telegram import Telegram
@@ -110,8 +113,11 @@ class Triple:
             text = event['text']
             query = "vk_query"
             add = [event['peer_id']]
-        else:
-            print(event)
+
+        elif event.get("ds_event"):
+            event: discord.Message = event['ds_event']
+            text = event.content
+            query = "ds_query"
 
         func = self.__found_in_query(query, text)
         if func:
@@ -176,6 +182,22 @@ class Triple:
 
         return wrapper
 
+    # async def __run(self, loop):
+    #     vk = Vk(self.tokens['vk'], self.__message_handler)
+    #     tg = Telegram(self.tokens['tg'], self.__message_handler)
+    #     ds = Discord(self.tokens['ds'], self.__message_handler, loop).run(self.tokens['ds'])
+    #
+    #     tasks = [
+    #         vk.run(),
+    #         tg.run(),
+    #     ]
+    #
+    #     for task in tasks:
+    #         asyncio.create_task(task)
+    #     # wait_tasks = asyncio.wait(tasks)
+    #
+    #     await ds
+
     def run(self, loop: asyncio.get_event_loop = asyncio_loop) -> None:
         """
         Запуск программы:
@@ -183,17 +205,32 @@ class Triple:
 
             :param loop: > self asyncio.get_event_loop() or u may input yours
         """
+
+        asyncio.set_event_loop(loop)
+
+        try:
+            loop.add_signal_handler(signal.SIGINT, lambda: loop.stop())
+            loop.add_signal_handler(signal.SIGTERM, lambda: loop.stop())
+        except NotImplementedError:
+            pass
+
         vk = Vk(self.tokens['vk'], self.__message_handler)
         tg = Telegram(self.tokens['tg'], self.__message_handler)
+        ds = Discord(self.tokens['ds'], self.__message_handler, loop)
 
         tasks = [
             vk.run(),
             tg.run(),
+            ds.run(self.tokens['ds'])
         ]
+
+        # for task in tasks:
+        #     asyncio.create_task(task)
         wait_tasks = asyncio.wait(tasks)
 
         try:
+            # loop.run_until_complete(sellf.__run(loop))  # Запуск
             loop.run_until_complete(wait_tasks)  # Запуск
         except KeyboardInterrupt:
-            self.__debug('Exit')
+            print('Exit')
             loop.stop()

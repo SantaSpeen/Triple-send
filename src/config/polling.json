@@ -1,5 +1,8 @@
 {
   "vk_token": null,
   "tg_token": null,
-  "ds_token": null
+  "ds_token": null,
+  "vk_api_settings": {
+    "version": "5.131"
+  }
 }
