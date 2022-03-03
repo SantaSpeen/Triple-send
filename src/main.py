@@ -1,5 +1,7 @@
 import triple
 
+# TODO: Changeable vk_api_version
+# default vk_api_version is 5.131
 tr = triple.Triple(
     vk_token="Token here",  # Default None
     tg_token="Token here",  # Default None
