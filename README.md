@@ -25,6 +25,15 @@ Demo:
 
 ### How to run
 
+* Install requirements
+```shell
+$ python3.9 -m pip install -r requirements.txt
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+...
+
+```
+
+
 ```python
 import triple
 
@@ -78,8 +87,3 @@ if __name__ == '__main__':
 ## Links
 
 * [Author's Telegram](https://t.me/SantaSpeen "SantaSpeen"): https://t.me/SantaSpeen
-
-Used in: 
-
-* [Python-CLI-Game-Engine](https://github.com/SantaSpeen/Python-CLI-Game-Engine)
-* [CLI-Remote-in-Python](https://github.com/SantaSpeen/CLI-Remote-in-Python)
