@@ -29,9 +29,15 @@ def bot_echo(event_type: str, event: triple.types.MessageObject):
     return f"Event type: `{event_type}`\n\nMessage: `{event.text}`\n\nEvent: `{event!r}`"
 
 
-@tr.on_message("help", regex=True)
+@tr.on_message(r"((?:\.help|/help|/start))", regex=True)
 def bot_help(event_type: str, event: triple.types.MessageObject):
-    pass
+
+    message = "Help:\n1: .echo {0}<some text>{0}"
+
+    if event_type == "vk_event":
+        return message.format("")
+
+    return message.format('`')
 
 
 @tr.on_event
