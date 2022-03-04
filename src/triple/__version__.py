@@ -1,0 +1,9 @@
+__title__ = 'Triple'
+__description__ = 'Triple'
+__url__ = 'https://github.com/SantaSpeen/Triple-send'
+__version__ = "1.0"
+__build__ = 584
+__author__ = "Maxim Khomutov"
+__author_email__ = 'santaspeen@gmail.com'
+__license__ = "MIT"
+__copyright__ = 'Copyright 2022 Maxim Khomutov'
