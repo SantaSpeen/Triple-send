@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+# Written by: SantaSpeen
+# (c) SantaSpeen 2022
 import triple
 
 # TODO: Changeable vk_api_version, list with allowed_events

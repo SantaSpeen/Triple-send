@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+# Written by: SantaSpeen
+# (c) SantaSpeen 2022
 import asyncio
 import json
 import os
