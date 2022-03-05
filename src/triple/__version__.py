@@ -1,8 +1,8 @@
 __title__ = 'Triple'
 __description__ = 'Triple'
 __url__ = 'https://github.com/SantaSpeen/Triple-send'
-__version__ = "1.0"
-__build__ = 584
+__version__ = "0.8.2"
+__build__ = 644
 __author__ = "Maxim Khomutov"
 __author_email__ = 'santaspeen@gmail.com'
 __license__ = "MIT"

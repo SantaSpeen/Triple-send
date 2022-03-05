@@ -13,7 +13,7 @@ class Vk:
     def __init__(self, token, handler, raw_handler,):
         self.group_id = None
 
-        self.log: logging.Logger = logging.getLogger("vkontakte")
+        self.log: logging.Logger = logging.getLogger(__name__)
         self.__debug: logging.Logger.debug = self.log.debug
 
         self.__debug(f"__init__(self, {token=}, {handler=})")
@@ -42,9 +42,9 @@ class Vk:
         while True:
             try:
                 longpoll_object = await longpoll.wait()
+                self.__debug(f"longpoll_object: %s" % longpoll_object)
                 if longpoll_object.get('updates'):
                     event_type: str = longpoll_object['updates'][0]['type']
-                    self.__debug(f"Event: %s" % longpoll_object)
                     asyncio.create_task(self.raw_handler("vk_event", longpoll_object['updates'][0], self))
                     if event_type in allowed_events:
                         event_object = longpoll_object['updates'][0]['object']

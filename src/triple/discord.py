@@ -11,7 +11,7 @@ class Discord(discord.Client):
 
     def __init__(self, token, handler, loop, **options):
         super().__init__(**options)
-        self.log: logging.Logger = logging.getLogger("Discord")
+        self.log: logging.Logger = logging.getLogger(__name__)
         self.__debug: logging.Logger.debug = self.log.debug
 
         self.__debug(f"__init__(self, {token=}, {handler=})")

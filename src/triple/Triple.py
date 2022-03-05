@@ -157,7 +157,7 @@ class Triple:
 
         return None, add
 
-    async def __raw_event_handler(self, event_type, event, cls):
+    async def __raw_event_handler(self, event_type, event, cls=None):
         for f in self.queries['raw_query']:
             asyncio.create_task(f(event_type, event, cls))
 
@@ -254,7 +254,7 @@ class Triple:
             vk = Vk(self.tokens['vk'], self.__message_handler, self.__raw_event_handler)
             tasks.append(vk.run())
         if self.tokens.get('tg'):
-            tg = Telegram(self.tokens['tg'], self.__message_handler, loop, tg_content_types)
+            tg = Telegram(self.tokens['tg'], self.__message_handler, self.__raw_event_handler, loop, tg_content_types)
             tasks.append(tg.run())
         if self.tokens.get('ds'):
             ds = Discord(self.tokens['ds'], self.__message_handler, loop)
