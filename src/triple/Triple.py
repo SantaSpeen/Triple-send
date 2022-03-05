@@ -61,7 +61,7 @@ class Triple:
         self.prefix = prefix
         self._config_path: str = config_path
 
-        self.__queries = {
+        self.queries = {
             "vk_query": [],
             "tg_query": [],
             "ds_query": [],
@@ -76,11 +76,17 @@ class Triple:
             self.__debug(error_string)
             raise NoEnoughTokens(error_string)
 
-    def __str__(self) -> str:
-        return f"Triple(vk_token={self.tokens['vk'][0:5]}, tg_token={self.tokens['tg'][0:5]}, ds_token={self.tokens['ds'][0:5]}, config_path={self._config_path})"
-
     def __repr__(self) -> str:
-        return f"Triple(vk_token={self.tokens['vk'][0:5]}, tg_token={self.tokens['tg'][0:5]}, ds_token={self.tokens['ds'][0:5]}, config_path={self._config_path})"
+        vk_token = self.tokens['vk']
+        if vk_token:
+            vk_token = f"'{vk_token[0:5]}'"
+        tg_token = self.tokens['tg']
+        if tg_token:
+            tg_token = f"'{tg_token[0:5]}'"
+        ds_token = self.tokens['ds']
+        if ds_token:
+            ds_token = f"'{ds_token[0:5]}'"
+        return f"<Triple vk_token={vk_token}, tg_token={tg_token}, ds_token={ds_token}, config_path={self._config_path}>"
 
     def __read_config(self):
         self.__debug("__read_config(self)")
@@ -100,8 +106,8 @@ class Triple:
 
     def __found_in_query(self, query, text):
         if not query:
-            pass
-        for v in self.__queries[query]:
+            return
+        for v in self.queries[query]:
             cmd: str or re = v['command']
             regex = v['regex']
             if regex:
@@ -117,9 +123,6 @@ class Triple:
     async def __message_handler(self, event_type, event, cls):
 
         add = 0x0
-
-        for f in self.__queries['raw_query']:
-            asyncio.create_task(f(event_type, event))
 
         if event_type == "tg_event":
             event: types.Telegram = types.Telegram(cls.bot, cls.dispatcher, event)
@@ -138,17 +141,25 @@ class Triple:
 
         func = self.__found_in_query(query, event.text)
 
-        self.log.info(f"New event ({event_type}): {event}")
+        self.__debug(f"New event ({event_type}): {event}")
+        # self.__debug(f"Func: {func}")
+        # self.__debug(f"Query: {self.__queries}")
 
         if func:
             coro_or_not = func['function'](event_type, event)
             try:
+
                 return await coro_or_not, add
 
             except TypeError:
+
                 return coro_or_not, add
 
         return None, add
+
+    async def __raw_event_handler(self, event_type, event, cls):
+        for f in self.queries['raw_query']:
+            asyncio.create_task(f(event_type, event, cls))
 
     def on_message(self,
                    commands: list or str,
@@ -198,7 +209,7 @@ class Triple:
 
                 for add_to in add_to_list:
                     self.__debug(f'{add_to=}, {f=}, {cmd=}, {startswith=}, {regex_compiled=}')
-                    self.__queries[add_to].append({
+                    self.queries[add_to].append({
                         "function": f,
                         "command": cmd,
                         "is_startswith": startswith,
@@ -215,7 +226,7 @@ class Triple:
 
         def wrapper(f):
 
-            self.__queries['raw_query'].append(f)
+            self.queries['raw_query'].append(f)
 
             return f
 
@@ -239,13 +250,13 @@ class Triple:
 
         tasks = list()
 
-        if self.tokens['vk']:
-            vk = Vk(self.tokens['vk'], self.__message_handler)
+        if self.tokens.get('vk'):
+            vk = Vk(self.tokens['vk'], self.__message_handler, self.__raw_event_handler)
             tasks.append(vk.run())
-        if self.tokens['tg']:
+        if self.tokens.get('tg'):
             tg = Telegram(self.tokens['tg'], self.__message_handler, loop, tg_content_types)
             tasks.append(tg.run())
-        if self.tokens['ds']:
+        if self.tokens.get('ds'):
             ds = Discord(self.tokens['ds'], self.__message_handler, loop)
             tasks.append(ds.run())
 

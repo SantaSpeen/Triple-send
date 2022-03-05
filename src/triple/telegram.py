@@ -42,10 +42,11 @@ class Telegram:
         while True:
             try:
                 self.dispatcher.register_message_handler(**kwargs)
-                self.dispatcher.register_message_handler(self.start_handler)
+                self.dispatcher.register_message_handler(kwargs['callback'])
                 # self.dispatcher.register_edited_message_handler(**kwargs)
                 print("Telegram bot started!")
                 self.__debug("Run")
                 await self.dispatcher.start_polling()
             finally:
                 await self.bot.close()
+

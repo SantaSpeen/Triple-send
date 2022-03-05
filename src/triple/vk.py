@@ -2,6 +2,7 @@
 
 # Written by: SantaSpeen
 # (c) SantaSpeen 2022
+import asyncio
 import logging
 
 import aiovk
@@ -9,7 +10,7 @@ import aiovk
 
 class Vk:
 
-    def __init__(self, token, handler):
+    def __init__(self, token, handler, raw_handler,):
         self.group_id = None
 
         self.log: logging.Logger = logging.getLogger("vkontakte")
@@ -24,6 +25,7 @@ class Vk:
         self.__debug(f"{self.vk_session=}, {self.api=}")
 
         self.handler = handler
+        self.raw_handler = raw_handler
 
     async def find_self_id(self):
         response = await self.api.groups.getById()
@@ -39,11 +41,13 @@ class Vk:
 
         while True:
             try:
-                r = await longpoll.wait()
-                if r.get('updates'):
-                    event_type: str = r['updates'][0]['type']
+                longpoll_object = await longpoll.wait()
+                if longpoll_object.get('updates'):
+                    event_type: str = longpoll_object['updates'][0]['type']
+                    self.__debug(f"Event: %s" % longpoll_object)
+                    asyncio.create_task(self.raw_handler("vk_event", longpoll_object['updates'][0], self))
                     if event_type in allowed_events:
-                        event_object = r['updates'][0]['object']
+                        event_object = longpoll_object['updates'][0]['object']
                         event = event_object
                         if event_type.startswith('message'):
                             event = event_object['message']

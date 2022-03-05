@@ -40,7 +40,7 @@ class Vkontakte(MessageObject):
         self.raw: dict = raw
 
     def __repr__(self):
-        return f"<Vkontakte date={self.date} user_id={self.user_id} chat_id={self.chat_id} message_id={self.message_id} attachments={self.attachments} text={self.text}>"
+        return f"<Vkontakte date={self.date} user_id={self.user_id} chat_id={self.chat_id} message_id={self.message_id} attachments={self.attachments} text='{self.text}'>"
 
 
 class Telegram(MessageObject):
@@ -66,7 +66,7 @@ class Telegram(MessageObject):
         return []
 
     def __repr__(self):
-        return f"<Telegram date={self.date} user_id={self.user_id} chat_id={self.chat_id} message_id={self.message_id} attachments={self.attachments} text={self.text}>"
+        return f"<Telegram date={self.date} user_id={self.user_id} chat_id={self.chat_id} message_id={self.message_id} attachments={self.attachments} text='{self.text}'>"
 
 
 class Discord(MessageObject):
@@ -85,4 +85,4 @@ class Discord(MessageObject):
         self.raw: discord.Message = raw
 
     def __repr__(self):
-        return f"<Discord date={self.date} user_id={self.user_id} chat_id={self.chat_id} message_id={self.message_id} attachments={self.attachments} text={self.text}>"
+        return f"<Discord date={self.date} user_id={self.user_id} chat_id={self.chat_id} message_id={self.message_id} attachments={self.attachments} text='{self.text}'>"

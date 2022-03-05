@@ -2,6 +2,12 @@
 
 # Written by: SantaSpeen
 # (c) SantaSpeen 2022
+from typing import Any, Union
+
+from triple.discord import Discord
+from triple.telegram import Telegram
+from triple.vk import Vk
+
 import triple
 
 # TODO: Changeable vk_api_version, list with allowed_events
@@ -36,7 +42,7 @@ def bot_echo(event_type: str, event: triple.types.MessageObject):
 @tr.on_message(r"((?:\.help|/help|/start))", regex=True)
 def bot_help(event_type: str, event: triple.types.MessageObject):
 
-    message = "Help:\n1: .echo {0}<some text>{0}"
+    message = "Help:\n1: {0}.echo <some text>{0}"
 
     if event_type == "vk_event":
         return message.format("")
@@ -45,7 +51,7 @@ def bot_help(event_type: str, event: triple.types.MessageObject):
 
 
 @tr.on_event
-async def all_events(event_from: str, event):
+async def all_events(event_from: str, event: Any, cls: Union[Vk, Telegram, Discord]):
     print(event_from, event)
 
 
